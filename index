@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic AI Governance Architect</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --dark-bg: #10121a;
+            --dark-card: #1a1d2d;
+            --dark-text: #e0e0e0;
+            --dark-border: #333852;
+            --highlight-color: #00e0ff;
+            --button-color: #00aaff;
+            --button-hover: #33bbff;
+            --low-flow: #66ff99; /* Green */
+            --medium-flow: #ffeb3b; /* Yellow */
+            --high-flow: #ff4444; /* Red */
+            --font-body: 'Roboto Mono', monospace;
+            --font-header: 'Orbitron', sans-serif;
+            --transition-speed: 0.4s;
+        }
+        
+        [data-theme="light"] {
+            --dark-bg: #f0f4f8;
+            --dark-card: #ffffff;
+            --dark-text: #2c3e50;
+            --dark-border: #dce1e7;
+            --highlight-color: #007bff;
+            --button-color: #007bff;
+            --button-hover: #0056b3;
+            --low-flow: #2ecc71;
+            --medium-flow: #f39c12;
+            --high-flow: #e74c3c;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 1% 1%, var(--dark-border) 1px, transparent 0);
+            background-size: 25px 25px;
+            color: var(--dark-text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background-color: var(--dark-card);
+            border-radius: 16px;
+            border: 1px solid var(--dark-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            padding: 30px 40px;
+            transition: all var(--transition-speed) ease-in-out;
+            display: flex;
+            gap: 40px;
+            overflow: hidden;
+        }
+
+        .form-section {
+            width: 40%;
+            flex-shrink: 0;
+        }
+
+        .diagram-section {
+            width: 60%;
+            flex-grow: 1;
+        }
+
+        .header h1 {
+            font-family: var(--font-header);
+            color: var(--highlight-color);
+            font-size: 2.2em;
+            text-shadow: 0 0 8px var(--highlight-color);
+            margin: 0;
+        }
+        .header p {
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--highlight-color);
+            font-size: 1em;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            font-size: 1em;
+            font-family: var(--font-body);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group select:focus-visible, .form-group input:focus-visible {
+            outline: none;
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 8px var(--highlight-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid var(--button-color);
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+            font-family: var(--font-body);
+            background-color: transparent;
+            color: var(--button-color);
+        }
+        .btn:hover {
+            background-color: var(--button-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            color: var(--dark-text);
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        .theme-toggle:hover {
+            color: var(--highlight-color);
+            border-color: var(--highlight-color);
+        }
+
+        /* Diagram Styles */
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            background-color: var(--dark-bg);
+            overflow: hidden;
+        }
+        #diagram-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        .svg-node {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes pop-in {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .svg-node:hover { transform: scale(1.05) rotate(-1deg); }
+        .svg-node rect {
+            fill: var(--dark-card);
+            stroke: var(--dark-border);
+            stroke-width: 2px;
+            transition: fill 0.5s, stroke 0.5s;
+        }
+        .svg-node:hover rect {
+            stroke: var(--highlight-color);
+            box-shadow: 0 0 15px var(--highlight-color);
+        }
+        .svg-node text { fill: var(--dark-text); transition: fill 0.5s; }
+
+        .data-flow-path {
+            fill: none;
+            stroke-width: 4px;
+            stroke-dasharray: 10, 5;
+            animation: dash 5s linear infinite;
+        }
+        .data-flow-path.high { stroke: var(--high-flow); }
+        .data-flow-path.medium { stroke: var(--medium-flow); }
+        .data-flow-path.low { stroke: var(--low-flow); }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 320px;
+            height: 100%;
+            background-color: rgba(30, 30, 46, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateX(105%);
+            padding: 30px;
+            z-index: 20;
+            border-left: 1px solid var(--dark-border);
+            overflow-y: auto;
+        }
+        .sidebar.active { transform: translateX(0); }
+        .sidebar-close button {
+            background: none; border: none; font-size: 2em; cursor: pointer; color: var(--dark-text); float: right;
+        }
+        .sidebar h3 {
+            color: var(--highlight-color);
+            font-family: var(--font-header);
+            text-shadow: 0 0 5px var(--highlight-color);
+        }
+        .sidebar ul { padding-left: 20px; }
+        
+        .download-actions {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .share-action {
+            margin-top: 10px;
+            display: flex;
+        }
+        .share-action .btn { width: 100%; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .form-section, .diagram-section { width: 100%; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">💡</button>
+
+<div class="container">
+    <div class="form-section">
+        <div class="header">
+            <h1>AI Governance Architect</h1>
+            <p>Select your project's parameters below. The diagram will update instantly.</p>
+        </div>
+        <form id="governance-form">
+            <div class="form-group">
+                <label for="projectName">Project Name</label>
+                <input type="text" id="projectName" name="projectName" value="Customer Churn Prediction" required>
+            </div>
+            <div class="form-group">
+                <label for="architectureType">Architecture Type</label>
+                <select id="architectureType" name="architectureType">
+                    <option value="cloud">Cloud-Native</option>
+                    <option value="onPrem">On-Premises</option>
+                    <option value="hybrid">Hybrid</option>
+                </select>
+            </div>
+            <div class="form-group on-prem-fields">
+                <label for="servers">Number of Servers (On-Prem)</label>
+                <select id="servers" name="servers">
+                    <option value="1-5">1-5</option><option value="5-10">5-10</option><option value="10+">10+</option>
+                </select>
+            </div>
+            <div class="form-group on-prem-fields">
+                <label for="storage">On-Prem Storage (TB)</label>
+                <select id="storage" name="storage">
+                    <option value="<10">&lt;10 TB</option><option value="10-100">10-100 TB</option><option value="100+">100+ TB</option>
+                </select>
+            </div>
+            <div class="form-group cloud-fields">
+                <label for="cloudProvider">Cloud Provider</label>
+                <select id="cloudProvider" name="cloudProvider">
+                    <option value="aws">AWS</option><option value="azure">Azure</option><option value="gcp">GCP</option>
+                </select>
+            </div>
+            <div class="form-group cloud-fields">
+                <label for="computeService">Compute Service</label>
+                <select id="computeService" name="computeService">
+                    <option value="ec2">EC2 / VMs</option><option value="lambda">Lambda / Functions</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modelStage">Model Lifecycle Stage</label>
+                <select id="modelStage" name="modelStage">
+                    <option value="development">Development</option><option value="production">Production</option><option value="retired">Retired</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dataSensitivity">Data Sensitivity</label>
+                <select id="dataSensitivity" name="dataSensitivity">
+                    <option value="low">Low (Public)</option><option value="medium">Medium (Internal)</option><option value="high">High (Confidential/PII)</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div class="diagram-section">
+        <div class="diagram-container">
+            <svg id="diagram-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div class="download-actions">
+            <button class="btn" id="export-svg-btn">Download SVG</button>
+            <button class="btn" id="export-png-btn">Download PNG</button>
+            <button class="btn" id="export-text-btn">Download TXT</button>
+            <button class="btn" id="export-csv-btn">Download CSV</button>
+        </div>
+        <div class="share-action">
+            <button class="btn" id="share-btn">🔗 Copy Shareable Link</button>
+        </div>
+    </div>
+</div>
+
+<div id="sidebar" class="sidebar">
+    <div class="sidebar-close"><button id="sidebar-close-btn">×</button></div>
+    <h3 id="sidebar-title"></h3>
+    <div id="sidebar-description"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    /**
+     * Main application object to encapsulate state and logic.
+     */
+    const app = {
+        // --- DOM Elements ---
+        elements: {
+            form: document.getElementById('governance-form'),
+            svgContainer: document.getElementById('diagram-svg'),
+            sidebar: document.getElementById('sidebar'),
+            themeToggleBtn: document.getElementById('theme-toggle'),
+            architectureTypeSelect: document.getElementById('architectureType'),
+            cloudFields: document.querySelectorAll('.cloud-fields'),
+            onPremFields: document.querySelectorAll('.on-prem-fields'),
+            sidebarTitle: document.getElementById('sidebar-title'),
+            sidebarDescription: document.getElementById('sidebar-description'),
+            sidebarCloseBtn: document.getElementById('sidebar-close-btn'),
+            exportSvgBtn: document.getElementById('export-svg-btn'),
+            exportPngBtn: document.getElementById('export-png-btn'),
+            exportTextBtn: document.getElementById('export-text-btn'),
+            exportCsvBtn: document.getElementById('export-csv-btn'),
+            shareBtn: document.getElementById('share-btn'),
+        },
+
+        // --- State ---
+        formData: {},
+
+        // --- Icons (Base64 for single file deployment) ---
+        icons: {
+             'user': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRIOGE0IDQgMCAwIDAtNCA0djIiPjwvcGF0aD48Y2lyY2xlIGN4PSIxMiIgY3k9IjciIHI9IjQiPjwvY2lyY2xlPjwvc3ZnPg==',
+            'server': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjIiIHk9IjIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiByeD0iMiIgcnk9IjIiPjwvcmVjdD48cmVjdCB4PSIyIiB5PSIxNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0PjxsaW5lIHgxPSI2IiB5MT0iNiIgeDI9IjYiIHkyPSI2Ij48L2xpbmU+PGxpbmUgeDE9IjYiIHkxPSIxOCIgeDI9IjYiIHkyPSIxOCI+PC9saW5lPjwvc3ZnPg==',
+            'database': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxlbGxpcHNlIGN4PSIxMiIgY3k9IjUiIHJ4PSI5IiByeT0iMyI+PC9lbGxpcHNlPjxwYXRoIGQ9Ik0yMSA1djZhOSA5IDAgMCAxLTkgMyA5IDkgMCAwIDEtOS0zVjUiPjwvcGF0aD48cGF0aCBkPSJNMwoxMmMwIDMtMy45MSA2LTkgNnM5IDMgOSAzIj48L3BhdGg+PC9zdmc+',
+            'model': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwb2x5Z29uIHBvaW50cz0iMTIgMiAxNS4wOSAxMi4yNiAyMiA3IDIwLjUgMjIgMy41IDIyIDIgNyA4LjkxIDEyLjI2IDEyIDIiPjwvcG9seWdvbj48L3N2Zz4=',
+            'security': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAyMkw1IDJsNyAwaDdsNyAwaC03bC03IDE4eiI+PC9wYXRoPjxsaW5lIHgxPSIxMiIgeTE9IjIiIHgyPSIxMiIgeTI9IjIyIj48L2xpbmU+PC9zdmc+',
+        },
+        
+        /**
+         * Initializes the application, sets up event listeners.
+         */
+        init() {
+            this.setupEventListeners();
+            this.loadStateFromUrl();
+            this.updateFormVisibility();
+            this.updateAndRender();
+        },
+
+        /**
+         * Sets up all necessary event listeners.
+         */
+        setupEventListeners() {
+            this.elements.form.addEventListener('input', () => this.updateAndRender());
+            this.elements.architectureTypeSelect.addEventListener('change', () => this.updateFormVisibility());
+            this.elements.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+            this.elements.sidebarCloseBtn.addEventListener('click', () => this.hideSidebar());
+            this.elements.exportSvgBtn.addEventListener('click', () => this.exportAsSVG());
+            this.elements.exportPngBtn.addEventListener('click', () => this.exportAsPNG());
+            this.elements.exportTextBtn.addEventListener('click', () => this.exportAsText());
+            this.elements.exportCsvBtn.addEventListener('click', () => this.exportAsCSV());
+            this.elements.shareBtn.addEventListener('click', () => this.copyShareableLink());
+
+            // Use event delegation for dynamically created SVG nodes
+            this.elements.svgContainer.addEventListener('click', (e) => {
+                const node = e.target.closest('.svg-node');
+                if (node) {
+                    const key = node.dataset.key;
+                    this.showSidebarForNode(key);
+                }
+            });
+        },
+
+        /**
+         * Updates form data, updates URL hash, and triggers a re-render.
+         */
+        updateAndRender() {
+            this.formData = Object.fromEntries(new FormData(this.elements.form).entries());
+            const encodedData = new URLSearchParams(this.formData).toString();
+            // Use replaceState to avoid cluttering browser history on every input
+            history.replaceState(null, '', '#' + encodedData);
+            this.renderDiagram();
+        },
+        
+        /**
+         * Loads initial state from URL hash if present.
+         */
+        loadStateFromUrl() {
+            if (window.location.hash) {
+                const params = new URLSearchParams(window.location.hash.substring(1));
+                params.forEach((value, key) => {
+                    const input = this.elements.form.elements[key];
+                    if (input) {
+                        input.value = value;
+                    }
+                });
+            }
+        },
+
+        /**
+         * Toggles the light/dark theme.
+         */
+        toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            this.elements.themeToggleBtn.textContent = newTheme === 'dark' ? '💡' : '🌙';
+        },
+
+        /**
+         * Updates visibility of conditional form fields.
+         */
+        updateFormVisibility() {
+            const type = this.elements.architectureTypeSelect.value;
+            this.elements.cloudFields.forEach(f => f.style.display = (type === 'cloud' || type === 'hybrid') ? 'block' : 'none');
+            this.elements.onPremFields.forEach(f => f.style.display = (type === 'onPrem' || type === 'hybrid') ? 'block' : 'none');
+        },
+        
+        /**
+         * Renders the entire SVG diagram based on current form data.
+         */
+        renderDiagram() {
+            const f = this.formData;
+            const components = {
+                'source': { x: 50, y: 150, title: 'Data Source', icon: this.icons.user, details: "External or internal data systems provide input." },
+                'compute': { x: 250, y: 150, title: 'Compute', icon: this.icons.server, details: "The core processing unit for model training and inference." },
+                'database': { x: 450, y: 150, title: 'Database', icon: this.icons.database, details: "Manages and stores data for model training and serving." },
+                'model': { x: 650, y: 150, title: 'AI Model', icon: this.icons.model, details: "The trained model which performs predictions or classifications." },
+                'governance': { x: 200, y: 400, width: 400, height: 100, title: 'AI Governance Framework', icon: this.icons.security, details: "The central pillar ensuring compliance, security, and ethical considerations." }
+            };
+
+            const flows = [
+                { from: 'source', to: 'compute', type: f.dataSensitivity, bend: 0 },
+                { from: 'compute', to: 'database', type: f.dataSensitivity, bend: 0 },
+                { from: 'database', to: 'model', type: f.dataSensitivity, bend: 0 },
+                { from: 'model', to: 'source', type: 'low', bend: 1 } // Return path
+            ];
+            
+            const governanceLinks = ['source', 'compute', 'database', 'model'];
+
+            let svgContent = flows.map(flow => this.generateSvgPath(flow, components)).join('');
+            svgContent += governanceLinks.map(key => this.generateGovernanceLink(components[key], components.governance)).join('');
+            svgContent += Object.entries(components).map(([key, comp]) => this.generateSvgNode(key, comp)).join('');
+            
+            this.elements.svgContainer.innerHTML = svgContent;
+        },
+
+        /**
+         * Generates SVG string for a single component node.
+         * @param {string} key - The component key.
+         * @param {object} comp - The component data.
+         * @returns {string} - The SVG group element as a string.
+         */
+        generateSvgNode(key, comp) {
+            const width = comp.width || 120;
+            const height = comp.height || 120;
+            return `
+                <g class="svg-node" transform="translate(${comp.x}, ${comp.y})" data-key="${key}" style="--delay: ${Object.keys(comp).indexOf(key) * 100}ms">
+                    <rect x="0" y="0" width="${width}" height="${height}" rx="15"></rect>
+                    <image href="${comp.icon}" x="${width*0.5 - 25}" y="20" width="50" height="50"></image>
+                    <text x="${width*0.5}" y="${height - 20}" text-anchor="middle" font-size="14" font-weight="bold">${comp.title}</text>
+                </g>
+            `;
+        },
+
+        /**
+         * Generates SVG string for a data flow path.
+         * @param {object} flow - The flow data.
+         * @param {object} components - The components map.
+         * @returns {string} - The SVG path element as a string.
+         */
+        generateSvgPath(flow, components) {
+            const start = components[flow.from];
+            const end = components[flow.to];
+            const startX = start.x + (start.width || 120) / 2;
+            const startY = start.y + (start.height || 120) / 2;
+            const endX = end.x + (end.width || 120) / 2;
+            const endY = end.y + (end.height || 120) / 2;
+            const c1x = startX + (endX - startX) / 2;
+            const c1y = startY - 100 * flow.bend;
+            const c2x = endX - (endX - startX) / 2;
+            const c2y = endY - 100 * flow.bend;
+
+            return `<path d="M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}" class="data-flow-path ${flow.type}"></path>`;
+        },
+        
+        /**
+         * Generates SVG string for a governance link.
+         * @returns {string} - The SVG path element as a string.
+         */
+        generateGovernanceLink(from, to) {
+            const fromX = from.x + (from.width || 120) / 2;
+            const fromY = from.y + (from.height || 120);
+            const toX = to.x + to.width / 2;
+            const toY = to.y;
+            return `<path d="M ${fromX} ${fromY} L ${toX} ${toY}" fill="none" stroke="var(--highlight-color)" stroke-width="1.5" stroke-dasharray="3,3"></path>`;
+        },
+        
+        /**
+         * Displays the sidebar with content for a specific node.
+         * @param {string} key - The key of the clicked node.
+         */
+        showSidebarForNode(key) {
+            const f = this.formData;
+            let title = '', description = '';
+
+            switch (key) {
+                case 'compute':
+                    title = 'Compute Engine';
+                    description = `The core processing unit for model training and inference.
+                        <ul>
+                            <li><strong>Architecture:</strong> ${f.architectureType}</li>
+                            ${(f.architectureType === 'onPrem' || f.architectureType === 'hybrid') ? `<li><strong>On-Prem Servers:</strong> ${f.servers}</li><li><strong>On-Prem Storage:</strong> ${f.storage}</li>` : ''}
+                            ${(f.architectureType === 'cloud' || f.architectureType === 'hybrid') ? `<li><strong>Cloud Provider:</strong> ${f.cloudProvider.toUpperCase()}</li><li><strong>Service:</strong> ${f.computeService}</li>` : ''}
+                        </ul>`;
+                    break;
+                case 'model':
+                    title = 'AI/ML Model';
+                    description = `The trained model which performs predictions or classifications.
+                        <ul>
+                            <li><strong>Project:</strong> ${f.projectName}</li>
+                            <li><strong>Lifecycle Stage:</strong> ${f.modelStage}</li>
+                            <li><strong>Data Sensitivity:</strong> ${f.dataSensitivity}</li>
+                        </ul>`;
+                    break;
+                case 'governance':
+                    title = 'AI Governance Framework';
+                    description = `This is the central pillar ensuring compliance. Key considerations include:
+                        <ul>
+                            <li><strong>Data Privacy:</strong> How the <strong>${f.dataSensitivity}</strong> data is handled.</li>
+                            <li><strong>Model Monitoring:</strong> Policies for the <strong>${f.modelStage}</strong> stage.</li>
+                            <li><strong>Access Control:</strong> Who can interact with the <strong>${f.architectureType}</strong> infrastructure.</li>
+                        </ul>`;
+                    break;
+                 default:
+                     const component = {
+                        'source': { title: 'Data Source', details: "External or internal data systems provide input." },
+                        'database': { title: 'Feature Store / Database', details: "Manages and stores data for model training and serving." }
+                     }[key];
+                     title = component.title;
+                     description = `<p>${component.details}</p>`;
+            }
+
+            this.elements.sidebarTitle.textContent = title;
+            this.elements.sidebarDescription.innerHTML = description;
+            this.elements.sidebar.classList.add('active');
+        },
+
+        hideSidebar() {
+            this.elements.sidebar.classList.remove('active');
+        },
+
+        /**
+         * Helper function to trigger a file download.
+         */
+        downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        },
+        
+        getReportText() {
+            const f = this.formData;
+            let content = `AI Governance Diagram Report for: ${f.projectName}\n================================================\n\n`;
+            content += `System Details:\n - Architecture: ${f.architectureType}\n\n`;
+            if (f.architectureType === 'onPrem' || f.architectureType === 'hybrid') {
+                content += `On-Premises Infrastructure:\n - Servers: ${f.servers}\n - Storage: ${f.storage}\n\n`;
+            }
+            if (f.architectureType === 'cloud' || f.architectureType === 'hybrid') {
+                content += `Cloud Infrastructure:\n - Provider: ${f.cloudProvider}\n - Compute: ${f.computeService}\n\n`;
+            }
+            content += `AI/ML Specifics:\n - Model Stage: ${f.modelStage}\n - Data Sensitivity: ${f.dataSensitivity}\n`;
+            return content;
+        },
+
+        exportAsText() { this.downloadFile(this.getReportText(), 'ai-governance-report.txt', 'text/plain'); },
+
+        exportAsCSV() {
+            let csvContent = 'Category,Parameter,Value\n';
+            Object.entries(this.formData).forEach(([key, value]) => {
+                const category = key.includes('cloud') || key.includes('onPrem') ? 'Infrastructure' : 'AI/ML';
+                csvContent += `${category},${key},"${value}"\n`;
+            });
+            this.downloadFile(csvContent, 'ai-governance-data.csv', 'text/csv');
+        },
+
+        exportAsSVG() {
+            const svgData = this.elements.svgContainer.outerHTML;
+            this.downloadFile(svgData, 'ai-governance-diagram.svg', 'image/svg+xml');
+        },
+        
+        exportAsPNG() {
+            const svgElement = this.elements.svgContainer;
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const canvas = document.createElement('canvas');
+            const svgSize = svgElement.getBoundingClientRect();
+            const scale = 2; // Render at 2x for higher quality
+            canvas.width = svgSize.width * scale;
+            canvas.height = svgSize.height * scale;
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => {
+                    this.downloadFile(blob, 'ai-governance-diagram.png', 'image/png');
+                });
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        },
+
+        copyShareableLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const originalText = this.elements.shareBtn.textContent;
+                this.elements.shareBtn.textContent = '✅ Copied!';
+                setTimeout(() => { this.elements.shareBtn.textContent = originalText; }, 2000);
+            });
+        }
+    };
+
+    // --- Start the App ---
+    app.init();
+});
+</script>
+
+</body>
+</html>
