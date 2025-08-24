@@ -1,0 +1,9 @@
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Common code editor configuration folders
+.vscode/
+.idea/
